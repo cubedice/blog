@@ -1,0 +1,1 @@
+Session info using XHR
