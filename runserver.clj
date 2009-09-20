@@ -4,10 +4,10 @@
   (:use compojure))
 
 (defserver server
-  {:port 9098} "/*" (servlet routes/blog-routes))
+  {:port 9099} "/*" (servlet routes/blog-routes))
 (defn run-init [] 
   (do ;;TODO: db init 
-    (start server))
+    (start server)))
 (defn up []
   (do (start server)))
 (defn down []
