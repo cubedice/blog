@@ -1,12 +1,15 @@
 ;; Database models
 (ns blog.models
   (:use clojure.contrib.sql))
-;; TODO: models should be... map, collection?
-(def post
-     [ :post
-       [:id :integer "PRIMARY KEY"]
-       [:title "varchar(255)"]
-       [:body :text] ])
+
+(def posts
+     [ :posts
+       [:id :integer]
+       [:id2 :integer "PRIMARY KEY"]
+       [:something :text] ] )
+(def oposts
+     [ :posts2
+       [:id :integer] ] )
 
 (def current-models
-     [post] )
+     [posts oposts] )

@@ -5,6 +5,10 @@
 (defroutes blog-routes
   (GET "/" 
     (controller/home))
+  (GET "/create-post"
+    (controller/create-post))
+  (POST "/create-post"
+    (controller/create-post params))
   (GET "/static/*"
     (or (serve-file "/Users/kevindavenport/workspace/blog/static/" (params :*)) :next))
   (ANY "*" 2

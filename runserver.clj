@@ -1,8 +1,8 @@
 ;; Start/stop server fns
 (ns blog.runserver
   (:use blog.routes)
-  (:use blog.models)
-  (:use blog.database)
+  (:require [blog.models :as models])
+  (:require [blog.database :as database])
   (:use compojure))
 
 (defserver server
@@ -10,7 +10,7 @@
 
 (defn run-init [] 
   (do
-    (create-db current-models)
+    (database/create-tables models/current-models)
     (start server)))
 (defn up []
   (do (start server)))
