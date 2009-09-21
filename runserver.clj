@@ -1,12 +1,16 @@
 ;; Start/stop server fns
 (ns blog.runserver
-  (:require [blog.routes :as routes])
+  (:use blog.routes)
+  (:use blog.models)
+  (:use blog.database)
   (:use compojure))
 
 (defserver server
-  {:port 9099} "/*" (servlet routes/blog-routes))
+  {:port 9099} "/*" (servlet blog-routes))
+
 (defn run-init [] 
-  (do ;;TODO: db init 
+  (do
+    (create-db current-models)
     (start server)))
 (defn up []
   (do (start server)))
