@@ -21,7 +21,7 @@
       (let [name (first model)
 	    specs (rest model)]
 	(do-commands 
-	 (format "CREATE TABLE %s (%s)"
+	  (format "CREATE TABLE %s (%s)"
 		 (as-str name)
 		 (apply str
 		   (map as-str

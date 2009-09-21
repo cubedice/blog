@@ -21,3 +21,9 @@
       (label "body" "Body") (text-area "body")[:br]
       (submit-button "Submit")
       )))
+
+(defn all-posts [posts]
+  (html-doc "All Posts"
+    (for [post posts]
+      [:div [:h1 (:title post)]
+      [:p (:body post)]])))

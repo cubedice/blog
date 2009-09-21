@@ -9,6 +9,8 @@
     (controller/create-post))
   (POST "/create-post"
     (controller/create-post params))
+  (GET "/posts"
+    (controller/all-posts))
   (GET "/static/*"
     (or (serve-file "/Users/kevindavenport/workspace/blog/static/" (params :*)) :next))
   (ANY "*" 2

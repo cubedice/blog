@@ -6,7 +6,7 @@
   (:use compojure))
 
 (defserver server
-  {:port 9099} "/*" (servlet blog-routes))
+  {:port 9098} "/*" (servlet blog-routes))
 
 (defn run-init [] 
   (do
