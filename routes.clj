@@ -11,6 +11,8 @@
     (controller/create-post params))
   (GET "/posts"
     (controller/all-posts))
+  (GET "/login" [{:headers {"Content-Type" "application/json"}}] 
+    (controller/login (params :username) (params :password)))
   (GET "/static/*"
     (or (serve-file "/Users/kevindavenport/workspace/blog/static/" (params :*)) :next))
   (ANY "*" 2

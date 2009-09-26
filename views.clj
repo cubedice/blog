@@ -7,8 +7,14 @@
    [:html
     [:head
      [:title title]
-     (include-css "/static/css/main.css")]
-    [:body body]]))
+     (include-css "/static/css/main.css")
+     (include-js  "http://code.jquery.com/jquery-latest.js"
+		  "/static/js/jquery.cookie.js"
+		  "/static/js/users.js")]
+    [:body 
+     [:div.content 
+      [:div#userBar]
+      body]]]))
 
 (defn home []
   (html-doc "Welcome"

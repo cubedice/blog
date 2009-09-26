@@ -11,9 +11,14 @@
   ([]
      (views/create-post))
   ([params]
-     (do
        (INSERT :posts {:title (params :title) :body (params :body)})
        (redirect-to "/posts")
-     )))
+     ))
 (defn all-posts []
-  (views/all-posts models/get-posts))
+  (views/all-posts (models/get-posts)))
+
+(defn login [username password]
+  (let [sessionid (models/login-attempt username password)]
+    (if (not (nil? sessionid))
+    [200 (str sessionid)]
+    [200 "Incorrect Credentials"])))

@@ -6,13 +6,12 @@
   (:use compojure))
 
 (defserver server
-  {:port 9098} "/*" (servlet blog-routes))
+  {:port 9099} "/*" (servlet blog-routes))
 
 (defn run-init [] 
-  (do
     (database/create-tables models/current-models)
-    (start server)))
+    (start server))
 (defn up []
-  (do (start server)))
+  (start server))
 (defn down []
-  (do (stop server)))
+  (stop server))
