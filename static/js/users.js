@@ -1,26 +1,37 @@
 /*Session info using XHR
 */ 
-function createForm(httpauth)
+function createLoginForm(userBar)
 {
-    httpauth.replaceWith("\
-            <form id='loginForm' method='get'>\
+    userBar.replaceWith("\
+            <div id='userBar'><form id='loginForm' method='get'>\
             <label>Username:<input id='loginForm-username' type='text' \
             name='username'/></label>\
             <label>Password:<input id='loginForm-password' type='password'\
             name='password'/></label>\
-            <input type='submit' id='loginSubmit' value='Log in'/></form>");
+            <input type='submit' id='loginSubmit' value='Log in'/> \
+            </form></div>");
 }
 
+function createStatusBar(userBar, userName)
+{
+    userBar.replaceWith("\
+            <div id='userBar'>" + userName +
+            " <a id='logout' href=''>log out</a></div>");
+            $("#logout").click(logout);
+}
 
 function login()
 {
     var uname = $("#loginForm-username").val();
     var pword = $("#loginForm-password").val();
-    $.get("/login", { username: uname, password: pword } ,
+    $.getJSON("/login", { username: uname, password: pword } ,
         function(dat){
-            var val1 = $.cookie('cookie', 'the_val');
-            var val2 = $.cookie('user_auth', dat, { expires: 7, path: '/', secure: true});
-            var val3 = $.cookie('the_cookie', 'the_value', { expires: 7, path: '/', secure: true }); 
+            if( dat == null || dat.sessionid == null || dat.username == null )
+                alert("Incorrect username or password"); 
+            else {
+                $.cookie('user', dat.sessionid, { expires: 7 });
+                createStatusBar($("#loginForm"), dat.username);
+            }
  
     });
     
@@ -29,14 +40,26 @@ function login()
 
 function logout()
 {
-    http.open("get", this.parentNode.action, false, "null", "null");
-    http.send("");
-    alert("You have been logged out.");
+    var session = unescape($.cookie('user'));
+    $.getJSON("/logout", { sid: session },
+        function(data){
+            $.cookie('user', null);
+            createLoginForm($("#userBar"));
+        });
     return false;
 }  
 
-
 $(document).ready(function(){
-    createForm($("#userBar"));
-    $("#loginSubmit").click(login);
-});
+    var session = unescape($.cookie('user'));
+    $.getJSON("/get-user", { sid: session },
+        function(data){
+            if(data == null) {
+                $.cookie('user', null);
+                createLoginForm($("#userBar"));
+                $("#loginSubmit").click(login);
+            }
+            else
+                createStatusBar($("#userBar"), data.username);
+        });
+
+    });

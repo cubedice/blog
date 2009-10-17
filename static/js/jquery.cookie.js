@@ -71,13 +71,14 @@ jQuery.cookie = function(name, value, options) {
             }
             expires = '; expires=' + date.toUTCString(); // use expires attribute, max-age is not supported by IE
         }
+        value = escape(value);
         // CAUTION: Needed to parenthesize options.path and options.domain
         // in the following expressions, otherwise they evaluate to undefined
         // in the packed version for some reason...
         var path = options.path ? '; path=' + (options.path) : '';
         var domain = options.domain ? '; domain=' + (options.domain) : '';
         var secure = options.secure ? '; secure' : '';
-        document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
+        document.cookie = [name, '=', escape(value), expires, path, domain, secure].join('');
     } else { // only name given, get cookie
         var cookieValue = null;
         if (document.cookie && document.cookie != '') {

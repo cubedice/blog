@@ -18,7 +18,10 @@
   (views/all-posts (models/get-posts)))
 
 (defn login [username password]
-  (let [sessionid (models/login-attempt username password)]
-    (if (not (nil? sessionid))
-    [200 (str sessionid)]
-    [200 "Incorrect Credentials"])))
+  (models/login-attempt username password))
+
+(defn logout [sessionid]
+  (models/logout sessionid))
+
+(defn get-user-info [sessionid]
+  (models/get-user-info sessionid))
