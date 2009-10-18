@@ -10,6 +10,7 @@ function createLoginForm(userBar)
             name='password'/></label>\
             <input type='submit' id='loginSubmit' value='Log in'/> \
             </form></div>");
+    $("#loginSubmit").click(login);
 }
 
 function createStatusBar(userBar, userName)
@@ -24,42 +25,35 @@ function login()
 {
     var uname = $("#loginForm-username").val();
     var pword = $("#loginForm-password").val();
-    $.getJSON("/login", { username: uname, password: pword } ,
-        function(dat){
-            if( dat == null || dat.sessionid == null || dat.username == null )
-                alert("Incorrect username or password"); 
-            else {
-                $.cookie('user', dat.sessionid, { expires: 7 });
-                createStatusBar($("#loginForm"), dat.username);
-            }
- 
-    });
+    $.getJSON("/login", { username: uname, password: pword }, authResponse);
     
     return false;
+}
+
+function authResponse( data )
+{
+    if( data == null || data.sessionid == null || data.username == null ) {
+        $.cookie('user', null);
+        createLoginForm($("#userBar"));
+    } 
+    else {
+        $.cookie('user', data.sessionid, { expires: 7 });
+        createStatusBar($("#userBar"), data.username);
+    }
 }
 
 function logout()
 {
     var session = unescape($.cookie('user'));
-    $.getJSON("/logout", { sid: session },
-        function(data){
-            $.cookie('user', null);
-            createLoginForm($("#userBar"));
-        });
+    $.getJSON("/logout", { sid: session }, authResponse);
     return false;
 }  
 
 $(document).ready(function(){
     var session = unescape($.cookie('user'));
-    $.getJSON("/get-user", { sid: session },
-        function(data){
-            if(data == null) {
-                $.cookie('user', null);
-                createLoginForm($("#userBar"));
-                $("#loginSubmit").click(login);
-            }
-            else
-                createStatusBar($("#userBar"), data.username);
-        });
+    if( session == null ) {
+        createLoginForm($("#userBar"));
+    }
+    $.getJSON("/get-user", { sid: session }, authResponse);
 
     });

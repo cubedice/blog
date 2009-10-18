@@ -46,7 +46,7 @@
   (let [userinfo (get-user sid)]
     (if (nil? userinfo)
       (json-str nil)
-      (json-str {:username (userinfo :username)}))))
+      (json-str {:sessionid (str sid) :username (userinfo :username)}))))
 
 (defn start-session [user]
   (let [key (secure-random-bytes 16)]
