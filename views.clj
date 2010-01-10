@@ -20,6 +20,14 @@
   (html-doc "Welcome"
 	    "some text!"))
 
+(defn create-user []
+  (html-doc "New User"
+    (form-to [:post "/new-user"]
+      (label "username" "Username")(text-field "username")[:br]
+      (label "password" "Password")(text-field "password")[:br]
+      (submit-button "Create"))))
+      
+
 (defn create-post []
   (html-doc "Create"
     (form-to [:post "/create-post"] 

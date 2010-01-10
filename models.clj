@@ -29,8 +29,8 @@
      [:username "varchar(256)"]
      [:password "varchar(256)"]
      [:auth_level "varchar(256)"]
-     [:last_login "varchar(256)"]
-     [:sessionid "varchar(256)"] ])
+     [:last_login :integer]
+     [:Sessionid "varchar(256)"] ])
 
 (defn create-user [username password]
   (let [user {:username username :password (BCrypt/hashpw password (BCrypt/gensalt 12))}]
@@ -41,7 +41,7 @@
     (first (SELECT "*" "users" (str "sessionid='" sessionid "'"))))
   ([username password]
     (let [user (first (SELECT "*" "users" (str "username='" username "'")))]
-      (if (and (not (nil? user)) (= (user :password) password))
+      (if (and (not (nil? user)) (BCrypt/checkpw password (user :password)))
         user))))
      
 

@@ -19,6 +19,13 @@
         (INSERT :posts {:title title :body body}))
       (redirect-to "/posts"))))
 
+(defn create-user
+  ([]
+     (views/create-user))
+  ([username password]
+     (models/create-user username password)
+     (views/home)))
+
 (defn all-posts []
   (views/all-posts (models/get-posts)))
 
