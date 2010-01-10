@@ -8,12 +8,17 @@
   (views/home))
 
 (defn create-post 
-  ([]
-     (views/create-post))
-  ([params]
-       (INSERT :posts {:title (params :title) :body (params :body)})
-       (redirect-to "/posts")
-     ))
+  ([sid]
+    (let [user (models/get-user sid)]
+     (if (and (not (nil? user)) (= (user :auth_level) "root"))
+       (views/create-post)
+       [403])))
+  ([sid title body]
+    (let [user (models/get-user sid)]
+      (if (and (not (nil? user)) (= (user :auth_level) "root"))
+        (INSERT :posts {:title title :body body}))
+      (redirect-to "/posts"))))
+
 (defn all-posts []
   (views/all-posts (models/get-posts)))
 

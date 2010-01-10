@@ -12,16 +12,16 @@
       :subprotocol "sqlite"    
       :subname     "/Users/kevindavenport/workspace/blog/database.sqlite"
       :user        "cubedice"
-      :password    "blipvert"})
+      :password    ""})
 
 (defn create-tables [modelcoll]
   "Create database tables"
-  (for [model modelcoll] 
-    (with-connection blog.database/db
+  (doseq [model modelcoll] 
+    (with-connection db  
       (let [name (first model)
 	    specs (rest model)]
 	(do-commands 
-	  (format "CREATE TABLE %s (%s)"
+	  (format "CREATE TABLE IF NOT EXISTS %s (%s)"
 		 (as-str name)
 		 (apply str
 		   (map as-str
@@ -31,7 +31,7 @@
 
 (defn delete-tables [modelcoll]
   "Drop database tables"
-  (for [model modelcoll] 
+  (doseq [model modelcoll] 
     (with-connection db
       (drop-table
 	 (first model)))))

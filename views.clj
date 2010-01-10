@@ -1,7 +1,7 @@
 (ns blog.views
   (:use compojure.html))
 
-(defn html-doc [title & body]
+(defn html-doc [title body & status]
   (html
    (doctype :html4)
    [:html

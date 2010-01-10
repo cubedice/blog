@@ -6,9 +6,9 @@
   (GET "/" 
     (controller/home))
   (GET "/create-post"
-    (controller/create-post))
+    (controller/create-post (params :sid)))
   (POST "/create-post"
-    (controller/create-post params))
+    (controller/create-post (params :sid) (params :title) (params :body)))
   (GET "/posts"
     (controller/all-posts))
   (GET "/login" [{:headers {"Content-Type" "application/json"}}] 

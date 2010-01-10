@@ -3,7 +3,8 @@
   (:use blog.database)
   (:use clojure.contrib.sql)
   (:use clojure.contrib.json.write)
-  (:use compojure.crypto))
+  (:use compojure.crypto)
+  (import BCrypt))
 
 (def posts
      [ :posts
@@ -28,11 +29,12 @@
      [:username "varchar(256)"]
      [:password "varchar(256)"]
      [:auth_level "varchar(256)"]
+     [:last_login "varchar(256)"]
      [:sessionid "varchar(256)"] ])
 
-(defn create-user [username & password]
-;TODO: hash pw and salt, store in db
-)
+(defn create-user [username password]
+  (let [user {:username username :password (BCrypt/hashpw password (BCrypt/gensalt 12))}]
+    (INSERT :users user)))
 
 (defn get-user 
   ([sessionid]
@@ -68,9 +70,6 @@
   (let [user (get-user sessionid)]
     (UPDATE :users (user :id) {:sessionid ""})
     (json-str nil)))
-      
-    
-
 
 (def current-models
-     [posts comments users] )
+     (vector posts comments users))
