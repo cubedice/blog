@@ -27,6 +27,7 @@
      [:id :integer "PRIMARY KEY"]
      [:username "varchar(256)"]
      [:password "varchar(256)"]
+     [:auth_level "varchar(256)"]
      [:sessionid "varchar(256)"] ])
 
 (defn create-user [username & password]
@@ -46,12 +47,12 @@
   (let [userinfo (get-user sid)]
     (if (nil? userinfo)
       (json-str nil)
-      (json-str {:sessionid (str sid) :username (userinfo :username)}))))
+      (json-str {:sessionid (str sid) :username (str (userinfo :username)) :authlevel (str (userinfo :auth_level))}))))
 
 (defn start-session [user]
   (let [key (secure-random-bytes 16)]
     (UPDATE :users (user :id) {:sessionid key})
-    (json-str {:sessionid (str key) :username (str (user :username))})))
+    (json-str {:sessionid (str key) :username (str (user :username)) :authlevel (str (user :auth_level))})))
 
 (defn end-session [sessionid]
 )
