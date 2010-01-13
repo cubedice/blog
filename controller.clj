@@ -10,9 +10,9 @@
 (defn create-post 
   ([sid]
     (let [user (models/get-user sid)]
-     (if (and (not (nil? user)) (= (user :auth_level) "root"))
-       (views/create-post)
-       [403])))
+      (if (and (not (nil? user)) (= (user :auth_level) "root"))
+        (views/create-post)
+        [403])))
   ([sid title body]
     (let [user (models/get-user sid)]
       (if (and (not (nil? user)) (= (user :auth_level) "root"))

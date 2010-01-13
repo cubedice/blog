@@ -39,7 +39,7 @@
 (defn get-user 
   ([sessionid]
     (let [user (first (SELECT "*" "users" (str "sessionid='" sessionid "'")))]
-      (if (< (- (user :last_login) (. System currentTimeMillis)) 604800000)
+      (if (and (not (nil? user)) (< (- (user :last_login) (. System currentTimeMillis)) 604800000))
 	user)))
   ([username password]
     (let [user (first (SELECT "*" "users" (str "username='" username "'")))]
@@ -54,7 +54,7 @@
       (json-str {:sessionid (str sid) :username (str (userinfo :username)) :authlevel (str (userinfo :auth_level))}))))
 
 (defn start-session [user]
-  (let [key (secure-random-bytes 16) ctime (. System currentTimeMillis)]
+  (let [key (gen-uuid) ctime (. System currentTimeMillis)]
     (UPDATE :users (user :id) {:sessionid key :last_login ctime})
     (json-str {:sessionid (str key) :username (str (user :username)) :authlevel (str (user :auth_level))})))
 

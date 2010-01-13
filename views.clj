@@ -16,7 +16,7 @@
       [:div#userBar]
       [:div.blogtitle "a weblog of computational enslavement"]
       [:div.sidebar "linkage"]
-      body]]]))
+      [:div.rightcol body]]]]))
 
 (defn home []
   (html-doc "Welcome"
