@@ -30,7 +30,7 @@
      [:password "varchar(256)"]
      [:auth_level "varchar(256)"]
      [:last_login :integer]
-     [:Sessionid "varchar(256)"] ])
+     [:sessionid "varchar(256)"] ])
 
 (defn create-user [username password]
   (let [user {:username username :password (BCrypt/hashpw password (BCrypt/gensalt 12))}]
@@ -38,7 +38,9 @@
 
 (defn get-user 
   ([sessionid]
-    (first (SELECT "*" "users" (str "sessionid='" sessionid "'"))))
+    (let [user (first (SELECT "*" "users" (str "sessionid='" sessionid "'")))]
+      (if (< (- (user :last_login) (. System currentTimeMillis)) 604800000)
+	user)))
   ([username password]
     (let [user (first (SELECT "*" "users" (str "username='" username "'")))]
       (if (and (not (nil? user)) (BCrypt/checkpw password (user :password)))
@@ -52,12 +54,9 @@
       (json-str {:sessionid (str sid) :username (str (userinfo :username)) :authlevel (str (userinfo :auth_level))}))))
 
 (defn start-session [user]
-  (let [key (secure-random-bytes 16)]
-    (UPDATE :users (user :id) {:sessionid key})
+  (let [key (secure-random-bytes 16) ctime (. System currentTimeMillis)]
+    (UPDATE :users (user :id) {:sessionid key :last_login ctime})
     (json-str {:sessionid (str key) :username (str (user :username)) :authlevel (str (user :auth_level))})))
-
-(defn end-session [sessionid]
-)
 
 (defn login-attempt [username password]
   (let

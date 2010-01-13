@@ -19,7 +19,7 @@
         (INSERT :posts {:title title :body body}))
       (redirect-to "/posts"))))
 
-(defn create-user
+(defn new-user
   ([]
      (views/create-user))
   ([username password]

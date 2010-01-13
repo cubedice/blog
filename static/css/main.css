@@ -1,1 +1,41 @@
-Main stylesheet
+.header {}
+.title {}
+.sidebar {
+    width: 200px;
+    left: 0px;
+    color: #9e4d00;
+    background-color: #222;
+    font: 1.5em Helvetica;
+    line-height: .6;
+    letter-spacing: .3em;
+    font-weight: lighter;
+}
+.blogtitle {
+    margin-left: -2px;
+    padding-bottom: 15px;
+    color: #e09700;
+    font: 2em Helvetica;
+    letter-spacing: .1em;
+    font-weight: bolder;
+}
+body {
+    width: 900px;
+    background-color: #111;
+    color: #ffffcc;
+  }
+.rightcol {
+    float: right;
+    font-family: Verdana;
+}
+.post {
+    width: 700px;
+}
+
+a {
+    color: #9e4d00;
+}
+#userBar {
+    font-family: Verdana;
+    text-align: right;
+    width: 100%;
+}

@@ -17,10 +17,9 @@ function createStatusBar(userBar, userData)
 {
     var content;
     if(userData.authlevel != null && userData.authlevel == 'root') {
-        url = '/create-post?sid=' + userData.sessionid;
         content = "<div id='userBar'>" + userData.username +
             " <a id='logout' href=''>log out</a>\
-            <a id='newPost' href=" + url + ">new post</a></div>";
+            <a id='newPost' href='/create-post'>new post</a></div>";
     }
     else {
         content = "\
@@ -65,6 +64,7 @@ function logout()
 
 $(document).ready(function(){
     var session = $.cookie('user');
+    
     if( session == null ) {
         createLoginForm($("#userBar"));
     }
