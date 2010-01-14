@@ -38,8 +38,22 @@
       (submit-button "Submit")
       )))
 
-(defn all-posts [posts]
+(defn edit-post [post]
+  (html-doc "Edit"
+    (form-to [:post (str "/posts/" (:slug post) "/edit")]
+      [:h1 (:title post)]
+      (label "body" "Body")(text-area "body" (:body_markdown post))[:br]
+      (submit-button "Submit"))))
+      
+
+(defn view-all-posts [posts]
   (html-doc "All Posts"
     (for [post posts]
-      [:div [:h1 (:title post)]
-      [:p (:body post)]])))
+      [:div [:h1 [:a {:href (str "/posts/" (:slug post))} (:title post)]]
+      [:p (:body_html post)]])))
+
+(defn view-post [post]
+  (html-doc (:title post)
+    [:div [:h1 (:title post)]
+    [:p (:body_html post)]
+    [:a {:href "/posts"} "back to directory"]]))

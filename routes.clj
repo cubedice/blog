@@ -10,7 +10,13 @@
   (POST "/create-post"
     (controller/create-post (cookies :user) (params :title) (params :body)))
   (GET "/posts"
-    (controller/all-posts))
+    (controller/view-all-posts))
+  (GET "/posts/:slug"
+    (controller/view-post (params :slug)))
+  (GET "/posts/:slug/edit"
+    (controller/edit-post (first (cookies :user)) (params :slug)))
+  (POST "/posts/:slug/edit"
+    (controller/edit-post (first (cookies :user)) (params :slug) (params :body)))
   (GET "/new-user"
     (controller/new-user))
   (POST "/new-user"

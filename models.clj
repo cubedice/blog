@@ -3,7 +3,7 @@
   (:use blog.database)
   (:use clojure.contrib.sql)
   (:use clojure.contrib.json.write)
-  (:require [clojure.contrib.str-utils2 :as s-u])
+  (:require [clojure.contrib.str-utils2 :as s-u-2])
   (:use compojure.crypto)
   (:import BCrypt)
   (:import (org.mozilla.javascript Context ContextFactory ScriptableObject)))
@@ -91,7 +91,7 @@
       (finally (Context/exit)))))
 
 (defn slugify [title]
-  (s-u/replace (.toLowerCase title) #"[^\\w-]" "-"))
+  (s-u-2/replace (.toLowerCase title) #"\s+" "-"))
     
 (defn get-posts []
   (sort-by :id > (SELECT "*" "posts")))
@@ -101,6 +101,9 @@
 
 (defn get-comments [post]
   (sort-by :id > (SELECT "*" "comments" (str "id='" (post :id) "'"))))
+
+
+;; currently used models
 
 (def current-models
      (vector posts comments users))

@@ -20,6 +20,21 @@
 			:author user :slug (models/slugify title)}))
       (redirect-to "/posts"))))
 
+(defn edit-post 
+  ([sid slug]
+    (let [user (models/get-user sid)
+	  post (models/get-post slug)]
+      (if (and (not (nil? user)) (= (user :auth_level) "root"))
+        (views/edit-post post)
+        [403])))
+  ([sid slug body]
+    (let [user (models/get-user sid)
+	  post (models/get-post slug)]
+      (if (and (not (nil? user)) (= (user :auth_level) "root") (not (nil? post)))
+        (UPDATE :posts (post :id) {:body_markdown body :body_html (models/markdown-to-html body)}))
+      (redirect-to (str "/posts/" (post :slug))))))
+
+
 (defn new-user
   ([]
      (views/create-user))
@@ -27,8 +42,11 @@
      (models/create-user username password)
      (views/home)))
 
-(defn all-posts []
-  (views/all-posts (models/get-posts)))
+(defn view-all-posts []
+  (views/view-all-posts (models/get-posts)))
+
+(defn view-post [slug]
+  (views/view-post (models/get-post slug)))
 
 (defn login [username password]
   (models/login-attempt username password))
