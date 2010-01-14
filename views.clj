@@ -12,8 +12,8 @@
 		  "/static/js/jquery.cookie.js"
 		  "/static/js/users.js")]
     [:body 
+     [:div#userBar]
      [:div.content
-      [:div#userBar]
       [:div.blogtitle "a weblog of computational enslavement"]
       [:div.sidebar "linkage"]
       [:div.rightcol body]]]]))

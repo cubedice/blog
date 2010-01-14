@@ -1,12 +1,32 @@
 /*Session info using XHR
 */ 
+
+function setCookie(c_name,value,expiredays)
+{
+  
+  var exdate=new Date();
+    exdate.setDate(exdate.getDate()+expiredays);
+    document.cookie=c_name+ "=" +escape(value)+";path="+
+        ((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+}
+
+function getCookie(c_name)
+{
+    var results = document.cookie.match ( '(^|;) ?' + c_name + '=([^;]*)(;|$)' );
+
+    if ( results )
+        return ( unescape ( results[2] ) );
+    else
+        return null;
+}
+
 function createLoginForm(userBar)
 {
     userBar.replaceWith("\
             <div id='userBar'><form id='loginForm' method='get'>\
-            <label>Username:<input id='loginForm-username' type='text' \
+            <label>username:<input id='loginForm-username' type='text' \
             name='username'/></label>\
-            <label>Password:<input id='loginForm-password' type='password'\
+            <label>password:<input id='loginForm-password' type='password'\
             name='password'/></label>\
             <input type='submit' id='loginSubmit' value='Log in'/> \
             </form></div>");
@@ -42,28 +62,29 @@ function login()
 function authResponse( data )
 {
     if( data == null || data.sessionid == null || data.username == null ) {
-        $.cookie('user', null);
+     
+        document.cookie = '';
         createLoginForm($("#userBar"));
     } 
     else {
-        $.cookie('user', data.sessionid, { expires: 7 });
+        setCookie('user', data.sessionid, 7);
         createStatusBar($("#userBar"), data);
     }
 }
 
 function logout()
 {
-    var session = unescape($.cookie('user'));
+    var session = unescape(getCookie('user'));
     $.getJSON("/logout", { sid: session },
         function() {
-            $.cookie('user', null);
+        document.cookie = '';
             document.location = '/'; 
         });
     return false;
 }  
 
 $(document).ready(function(){
-    var session = $.cookie('user');
+    var session = getCookie('user');
     
     if( session == null ) {
         createLoginForm($("#userBar"));

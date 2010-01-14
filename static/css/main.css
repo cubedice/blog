@@ -2,7 +2,8 @@
 .title {}
 .sidebar {
     width: 200px;
-    left: 0px;
+    margin-top: 30px;
+    float: left;
     color: #9e4d00;
     background-color: #222;
     font: 1.5em Helvetica;
@@ -25,6 +26,7 @@ body {
   }
 .rightcol {
     float: right;
+    width: 650px;
     font-family: Verdana;
 }
 .post {
@@ -38,4 +40,6 @@ a {
     font-family: Verdana;
     text-align: right;
     width: 100%;
+    margin-top: -8px;
+    background-color: #222;
 }
