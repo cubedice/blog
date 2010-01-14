@@ -16,7 +16,8 @@
   ([sid title body]
     (let [user (models/get-user sid)]
       (if (and (not (nil? user)) (= (user :auth_level) "root"))
-        (INSERT :posts {:title title :body body}))
+        (INSERT :posts {:title title :body_markdown body :body_html (models/markdown-to-html body) 
+			:author user :slug (models/slugify title)}))
       (redirect-to "/posts"))))
 
 (defn new-user

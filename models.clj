@@ -3,18 +3,20 @@
   (:use blog.database)
   (:use clojure.contrib.sql)
   (:use clojure.contrib.json.write)
+  (:require [clojure.contrib.str-utils2 :as s-u])
   (:use compojure.crypto)
-  (import BCrypt))
+  (:import BCrypt)
+  (:import (org.mozilla.javascript Context ContextFactory ScriptableObject)))
 
 (def posts
      [ :posts
      [:id :integer "PRIMARY KEY"]
      [:title "varchar(255)"]
-     [:body :text]
+     [:author "varchar(255)"]
+     [:slug "varchar(255)"]
+     [:body_markdown :text]
+     [:body_html :text]
      [:updated :timestamp "DEFAULT CURRENT_TIMESTAMP"]])
-
-(defn get-posts []
-     (sort-by :id > (SELECT "*" "posts")))
 
 (def comments    
      [ :comments
@@ -32,6 +34,9 @@
      [:last_login :integer]
      [:sessionid "varchar(256)"] ])
 
+
+;; user f'ns
+
 (defn create-user [username password]
   (let [user {:username username :password (BCrypt/hashpw password (BCrypt/gensalt 12))}]
     (INSERT :users user)))
@@ -44,8 +49,7 @@
   ([username password]
     (let [user (first (SELECT "*" "users" (str "username='" username "'")))]
       (if (and (not (nil? user)) (BCrypt/checkpw password (user :password)))
-        user))))
-     
+        user))))     
 
 (defn get-user-info [sid]
   (let [userinfo (get-user sid)]
@@ -69,6 +73,34 @@
   (let [user (get-user sessionid)]
     (UPDATE :users (user :id) {:sessionid ""})
     (json-str nil)))
+
+;; post f'ns
+
+;; from http://briancarper.net/blog/clojure-and-markdown-and-javascript-and-java-and
+(defn markdown-to-html [txt]
+  (let [cfact (ContextFactory/getGlobal)
+	context (.enterContext cfact)
+	scope (.initStandardObjects context)
+	input (Context/javaToJS txt scope)
+	script (str (slurp "/Users/kevindavenport/workspace/blog/static/js/showdown.js")
+		    "new Showdown.converter().makeHtml(input);")]
+    (try
+      (ScriptableObject/putProperty scope "input" input)
+      (let [result (.evaluateString context scope script "<cmd>" 1 nil)]
+	(Context/toString result))
+      (finally (Context/exit)))))
+
+(defn slugify [title]
+  (s-u/replace (.toLowerCase title) #"[^\\w-]" "-"))
+    
+(defn get-posts []
+  (sort-by :id > (SELECT "*" "posts")))
+
+(defn get-post [slug]
+  (first (SELECT "*" "posts" (str "slug='" slug "'"))))
+
+(defn get-comments [post]
+  (sort-by :id > (SELECT "*" "comments" (str "id='" (post :id) "'"))))
 
 (def current-models
      (vector posts comments users))
