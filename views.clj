@@ -9,14 +9,17 @@
      [:title title]
      (include-css "/static/css/main.css")
      (include-js  "http://code.jquery.com/jquery-latest.js"
-		  "/static/js/jquery.cookie.js"
-		  "/static/js/users.js")]
+		  "/static/js/showdown.js"
+		  "/static/js/users.js"
+		  "/static/js/ui.js")]
     [:body 
      [:div#userBar]
      [:div.content
       [:div.blogtitle "a weblog of computational enslavement"]
       [:div.sidebar "linkage"]
       [:div.rightcol body]]]]))
+
+;(defmacro table-form-to 
 
 (defn home []
   (html-doc "Welcome"
@@ -25,25 +28,30 @@
 (defn create-user []
   (html-doc "New User"
     (form-to [:post "/new-user"]
-      (label "username" "Username")(text-field "username")[:br]
-      (label "password" "Password")(text-field "password")[:br]
-      (submit-button "Create"))))
+      [:table {:border 0}
+       [:tr [:td (label "username" "username")][:td (text-field "username")]]
+       [:tr [:td (label "password" "password")][:td (text-field "password")]]
+       [:tr [:td (submit-button "create")]]])))
       
 
 (defn create-post []
   (html-doc "Create"
     (form-to [:post "/create-post"] 
-      (label "title" "Title" )(text-field "title")[:br]
-      (label "body" "Body") (text-area "body")[:br]
-      (submit-button "Submit")
+      [:table {:border 0}
+       [:tr [:td (label "title" "title" )][:td (text-field "title")]]
+       [:tr [:td (label "body" "body")][:td (text-area "body")]]
+       [:tr [:td (label "preview" "preview")][:td {:class "markdownprev"}]]
+       [:tr [:td (submit-button "submit")]]]
       )))
 
 (defn edit-post [post]
   (html-doc "Edit"
     (form-to [:post (str "/posts/" (:slug post) "/edit")]
       [:h1 (:title post)]
-      (label "body" "Body")(text-area "body" (:body_markdown post))[:br]
-      (submit-button "Submit"))))
+      [:table {:border 0}
+       [:tr [:td (label "body" "body")][:td(text-area "body" (:body_markdown post))]]
+       [:tr [:td (label "preview" "preview")][:td {:class "markdownprev"}]]
+       [:tr [:td (submit-button "submit")]]])))
       
 
 (defn view-all-posts [posts]
