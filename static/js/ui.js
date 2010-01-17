@@ -7,7 +7,7 @@ var converter = new Showdown.converter();
 
 $(document).ready(function(){
     $("textarea").bind("keyup", function(event){
-        var text = this.form.body.value;
+        var text = this.value;
         var html = converter.makeHtml(text);
         $("td.markdownprev").html(html);
     });

@@ -22,14 +22,17 @@
      [ :comments
      [:id :integer "PRIMARY KEY"]
      [:name "varchar(255)"]
-     [:body :text]
-     [:post_id :integer] ])
+     [:url "varchar(255)"]
+     [:body_markdown :text]
+     [:body_html :text]
+     [:post_slug "varchar(255)"] ])
 
 (def users
      [ :users
      [:id :integer "PRIMARY KEY"]
-     [:username "varchar(256)"]
+     [:username "varchar(256) NOT NULL UNIQUE"]
      [:password "varchar(256)"]
+     [:url "varchar(256)"]
      [:auth_level "varchar(256)"]
      [:last_login :integer]
      [:sessionid "varchar(256)"] ])
@@ -37,9 +40,14 @@
 
 ;; user f'ns
 
-(defn create-user [username password]
-  (let [user {:username username :password (BCrypt/hashpw password (BCrypt/gensalt 12))}]
-    (INSERT :users user)))
+(defn create-user [username password link]
+  (let [user {:username username :password (BCrypt/hashpw password (BCrypt/gensalt 12))
+	      :url link}]
+    (if (empty? (SELECT "*" "users" (str "username='" username "'")))
+      (do
+	(INSERT :users user)
+	user)
+      nil)))
 
 (defn get-user 
   ([sessionid]
@@ -55,7 +63,7 @@
   (let [userinfo (get-user sid)]
     (if (nil? userinfo)
       (json-str nil)
-      (json-str {:sessionid (str sid) :username (str (userinfo :username)) :authlevel (str (userinfo :auth_level))}))))
+      (json-str {:sessionid (str sid) :username (str (userinfo :username)) :authlevel (str (userinfo :auth_level)) :url (str (userinfo :url))}))))
 
 (defn start-session [user]
   (let [key (gen-uuid) ctime (. System currentTimeMillis)]
@@ -100,7 +108,7 @@
   (first (SELECT "*" "posts" (str "slug='" slug "'"))))
 
 (defn get-comments [post]
-  (sort-by :id > (SELECT "*" "comments" (str "id='" (post :id) "'"))))
+  (sort-by :id > (SELECT "*" "comments" (str "post_slug='" (post :slug) "'"))))
 
 
 ;; currently used models

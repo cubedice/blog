@@ -13,7 +13,8 @@
 		  "/static/js/users.js"
 		  "/static/js/ui.js")]
     [:body 
-     [:div#userBar]
+     [:div.userbar]
+     [:a {:href "#"} [:div.loginbutton "login/create account"]]
      [:div.content
       [:div.blogtitle "a weblog of computational enslavement"]
       [:div.sidebar "linkage"]
@@ -25,13 +26,24 @@
   (html-doc "Welcome"
 	    "some text!"))
 
-(defn create-user []
+(defn create-user [ & err ]
   (html-doc "New User"
-    (form-to [:post "/new-user"]
+    [:div [:div.error err]
+    (form-to [:post "/create-account"]
       [:table {:border 0}
        [:tr [:td (label "username" "username")][:td (text-field "username")]]
-       [:tr [:td (label "password" "password")][:td (text-field "password")]]
-       [:tr [:td (submit-button "create")]]])))
+       [:tr [:td (label "password" "password")][:td (password-field "password")]]
+       [:tr [:td (label "url" "url")][:td (text-field "link")]]
+       [:tr [:td (submit-button "create")]]])]))
+
+(defn edit-user-info [user]
+  (html-doc "edit account"
+   [:div [:h2 (:username user)]
+   (form-to [:post "/edit-account-info"]
+      [:table {:border 0}
+       [:tr [:td (label "password" "password")][:td (password-field "password")]]
+       [:tr [:td (label "url" "url")][:td (text-field "link")]]
+       [:tr [:td (submit-button "submit changes")]]])]))
       
 
 (defn create-post []
@@ -41,8 +53,7 @@
        [:tr [:td (label "title" "title" )][:td (text-field "title")]]
        [:tr [:td (label "body" "body")][:td (text-area "body")]]
        [:tr [:td (label "preview" "preview")][:td {:class "markdownprev"}]]
-       [:tr [:td (submit-button "submit")]]]
-      )))
+       [:tr [:td (submit-button "submit")]]])))
 
 (defn edit-post [post]
   (html-doc "Edit"
@@ -60,8 +71,18 @@
       [:div [:h1 [:a {:href (str "/posts/" (:slug post))} (:title post)]]
       [:p (:body_html post)]])))
 
-(defn view-post [post]
+(defn view-post [post comments]
   (html-doc (:title post)
     [:div [:h1 (:title post)]
     [:p (:body_html post)]
+     (for [comment comments]
+      [:p [:a {:href (:url comment)} (:name comment)][:br]
+       (:body_markdown comment)])
+    (form-to [:post (str "/posts/" (:slug post) "/comment")]
+      [:table {:border 0}
+       [:tr [:td (label "name" "name")][:td (text-field "name")]]
+       [:tr [:td (label "url" "url")][:td (text-field "link")]]
+       [:tr [:td (label "comment" "comment")][:td (text-area "comment")]]
+       [:tr [:td (label "preview" "preview")][:td {:class "markdownprev"}]]
+       [:tr [:td (submit-button "submit")]]])
     [:a {:href "/posts"} "back to directory"]]))

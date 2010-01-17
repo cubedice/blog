@@ -1,5 +1,8 @@
 .header {}
-.title {}
+.blogtitle {
+    clear: both;
+    width: 100%;
+}
 .sidebar {
     width: 200px;
     margin-top: 30px;
@@ -36,10 +39,42 @@ body {
 a {
     color: #9e4d00;
 }
-#userBar {
+.userbar {
     font-family: Verdana;
     text-align: right;
     width: 100%;
     margin-top: -8px;
+    margin-bottom: 8px;
     background-color: #222;
+}
+
+.loginbutton {
+    float: right;
+    font-family: Verdana;
+    font-size: .7em;
+    background-color: #222;
+    margin-top: -8px;
+    padding: 2px;
+    border: 2px;
+}
+
+a > .loginbutton {
+    text-decoration: none;
+}
+
+.markdownprev {
+    border: 2px dotted;
+    padding: 5px;
+    width: 500px;
+    height: 120px;
+}
+
+textarea {
+    width: 500px;
+    min-height: 120px;
+}
+
+.error {
+    color:red;
+    font-style: italic;
 }

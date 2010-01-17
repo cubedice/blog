@@ -2,7 +2,8 @@
   (:require [blog.views :as views])
   (:require [blog.models :as models])
   (:use blog.database)
-  (:use compojure))
+  (:use compojure)
+  (:import BCrypt))
 
 (defn home []
   (views/home))
@@ -34,19 +35,28 @@
         (UPDATE :posts (post :id) {:body_markdown body :body_html (models/markdown-to-html body)}))
       (redirect-to (str "/posts/" (post :slug))))))
 
+(defn post-comment [name url comment post-slug]
+  (INSERT :comments {:name name :url url :body_markdown comment 
+		     :body_html (models/markdown-to-html comment) :post_slug post-slug})
+  (redirect-to (str "/posts/" post-slug)))
+
 
 (defn new-user
   ([]
      (views/create-user))
-  ([username password]
-     (models/create-user username password)
-     (views/home)))
+  ([username password link]
+     (let [user (models/create-user username password link)]
+       (if (not (nil? user))
+	 (redirect-to "/")
+	 (views/create-user "username already exists")))))
 
 (defn view-all-posts []
   (views/view-all-posts (models/get-posts)))
 
 (defn view-post [slug]
-  (views/view-post (models/get-post slug)))
+  (let [post (models/get-post slug)
+	comments (models/get-comments post)]
+    (views/view-post post comments)))
 
 (defn login [username password]
   (models/login-attempt username password))
@@ -56,3 +66,16 @@
 
 (defn get-user-info [sessionid]
   (models/get-user-info sessionid))
+
+(defn edit-user-info 
+  ([sessionid]
+     (let [user (models/get-user sessionid)]
+       (if (not (nil? user))
+	 (views/edit-user-info user)
+	 (redirect-to "/"))))
+  ([sessionid password link]
+     (let [user (models/get-user sessionid)]
+       (if (not (nil? user))
+	 (UPDATE :users (user :id) {:password (BCrypt/hashpw password (BCrypt/gensalt 12))
+				    :url link}))
+       (edit-user-info sessionid))))

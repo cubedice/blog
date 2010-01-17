@@ -17,14 +17,20 @@
     (controller/edit-post (first (cookies :user)) (params :slug)))
   (POST "/posts/:slug/edit"
     (controller/edit-post (first (cookies :user)) (params :slug) (params :body)))
-  (GET "/new-user"
+  (POST "/posts/:slug/comment"
+    (controller/post-comment (params :name) (params :link) (params :comment) (params :slug)))
+  (GET "/create-account"
     (controller/new-user))
-  (POST "/new-user"
-    (controller/new-user (params :username) (params :password)))
+  (POST "/create-account"
+    (controller/new-user (params :username) (params :password) (params :link)))
   (GET "/login" [{:headers {"Content-Type" "application/json"}}] 
     (controller/login (params :username) (params :password)))
   (GET "/logout" [{:headers {"Content-Type" "application/json"}}] 
     (controller/logout (params :sid)))
+  (GET "/edit-account-info"
+    (controller/edit-user-info (cookies :user)))
+  (POST "/edit-account-info"
+    (controller/edit-user-info (cookies :user)  (params :password) (params :link)))
   (GET "/get-user" [{:headers {"Content-Type" "application/json"}}]
     (controller/get-user-info (params :sid)))
   (GET "/static/*"

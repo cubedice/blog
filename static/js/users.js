@@ -23,31 +23,35 @@ function getCookie(c_name)
 function createLoginForm(userBar)
 {
     userBar.replaceWith("\
-            <div id='userBar'><form id='loginForm' method='get'>\
-            <label>username:<input id='loginForm-username' type='text' \
+            <div class='userbar'><form id='loginForm' method='get'>\
+            <nobr><label>username:<input id='loginForm-username' type='text' \
             name='username'/></label>\
             <label>password:<input id='loginForm-password' type='password'\
             name='password'/></label>\
-            <input type='submit' id='loginSubmit' value='Log in'/> \
-            </form></div>");
+            <input type='submit' id='loginSubmit' value='log in'/> \
+            </form>  <a href='/create-account'>create account</a></nobr></div>");
     $("#loginSubmit").click(login);
+    $(".userbar").hide();
 }
 
 function createStatusBar(userBar, userData)
 {
     var content;
     if(userData.authlevel != null && userData.authlevel == 'root') {
-        content = "<div id='userBar'>" + userData.username +
-            " <a id='logout' href=''>log out</a>\
+        content = "<div class='userbar'><a href='/edit-account-info'>" + userData.username +
+            "</a>  <a id='logout' href=''>log out</a>\
             <a id='newPost' href='/create-post'>new post</a></div>";
     }
     else {
         content = "\
-            <div id='userBar'>" + userData.username +
-            " <a id='logout' href=''>log out</a></div>";
+            <div class='userbar'><a href='/edit-account-info'>" + userData.username +
+            "</a>  <a id='logout' href=''>log out</a></div>";
     }
     userBar.replaceWith(content);
     $("#logout").click(logout);
+    $(".loginbutton").hide();
+    $("#name").val(userData.username);
+    $("#link").val(userData.url);
 }
 
 function login()
@@ -64,11 +68,11 @@ function authResponse( data )
     if( data == null || data.sessionid == null || data.username == null ) {
      
         document.cookie = '';
-        createLoginForm($("#userBar"));
+        createLoginForm($(".userbar"));
     } 
     else {
         setCookie('user', data.sessionid, 7);
-        createStatusBar($("#userBar"), data);
+        createStatusBar($(".userbar"), data);
     }
 }
 
@@ -87,9 +91,12 @@ $(document).ready(function(){
     var session = getCookie('user');
     
     if( session == null ) {
-        createLoginForm($("#userBar"));
+        createLoginForm($(".userbar"));
     }
     else {
         $.getJSON("/get-user", { sid: unescape(session) }, authResponse);
     }
+    $(".loginbutton").click(function(e) {
+        $(".userbar").slideToggle("medium");
+    });
 });
