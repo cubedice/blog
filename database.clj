@@ -10,9 +10,8 @@
 (def db 
      {:classname   "org.sqlite.JDBC"    
       :subprotocol "sqlite"    
-      :subname     "/Users/kevindavenport/workspace/blog/database.sqlite"
-      :user        "cubedice"
-      :password    ""})
+      :subname     "/home/cubedice/database/database.sqlite"
+      :user        "cubedice"})
 
 (defn create-tables [modelcoll]
   "Create database tables"

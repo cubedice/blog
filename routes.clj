@@ -37,6 +37,6 @@
   (GET "/feed"
     (rss/main-feed))
   (GET "/static/*"
-    (or (serve-file "/Users/kevindavenport/workspace/blog/static/" (params :*)) :next))
+    (or (serve-file "/home/cubedice/public_html/mikedavenport.net/htdocs/static/" (params :*)) :next))
   (ANY "*" 2
     [404 "oops! page not found"]))

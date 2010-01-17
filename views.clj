@@ -7,22 +7,18 @@
    [:html
     [:head
      [:title title]
-     (include-css "/static/css/main.css"
-		  "/static/css/github.css")
-     (include-js  "http://code.jquery.com/jquery-latest.js"
-		  "/static/js/showdown.js"
-		  "/static/js/highlight.pack.js"
-		  "/static/js/users.js"
-		  "/static/js/ui.js")]
+     (include-css "/static/css/min.css")
+     (include-js  "/static/js/min.js")]
     [:body 
      [:div.userbar]
      [:a {:href "#"} [:div.loginbutton "login/create account"]]
      [:div.content
-      [:div.blogtitle [:a {:href "/"} "a weblog of computational enslavement"]]
+      [:div.blogtitle [:a {:href "/"} "a weblog of" [:br] "computational enslavement"]]
       [:div.sidebar 
        [:p [:a {:href "/about"} "about blog"]]
        [:p [:a {:href "/me"} "about me"]]
-       [:p [:a {:href "/posts"} "all posts"]]]
+       [:p [:a {:href "/posts"} "all posts"]]
+       [:p [:a {:href "/feed"} "rss feed"]]]
       [:div.rightcol body]]]]))
 
 ;(defmacro table-form-to 
