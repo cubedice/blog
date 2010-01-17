@@ -6,8 +6,8 @@ function setCookie(c_name,value,expiredays)
   
   var exdate=new Date();
     exdate.setDate(exdate.getDate()+expiredays);
-    document.cookie=c_name+ "=" +escape(value)+";path="+
-        ((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+    document.cookie=c_name+ "=" +escape(value)+";path=/;"+
+        ((expiredays==null) ? "" : "expires="+exdate.toGMTString()+";");
 }
 
 function getCookie(c_name)
@@ -31,7 +31,6 @@ function createLoginForm(userBar)
             <input type='submit' id='loginSubmit' value='log in'/> \
             </form>  <a href='/create-account'>create account</a></nobr></div>");
     $("#loginSubmit").click(login);
-    $(".userbar").hide();
 }
 
 function createStatusBar(userBar, userData)
@@ -63,12 +62,31 @@ function login()
     return false;
 }
 
+function authResponseOnLoad( data )
+{
+    if( data == null || data.sessionid == null || data.username == null ) {
+        setCookie('user', "", -7);
+        createLoginForm($(".userbar"));
+        $(".userbar").prepend(
+                $("<span/>")
+                    .addClass("error")
+                    .text("you have been logged out"));
+    } 
+    else {
+        setCookie('user', data.sessionid, 7);
+        createStatusBar($(".userbar"), data);
+    }
+}
+
 function authResponse( data )
 {
     if( data == null || data.sessionid == null || data.username == null ) {
-     
-        document.cookie = '';
+        setCookie('user', "", -7);
         createLoginForm($(".userbar"));
+        $(".userbar").prepend(
+                $("<span/>")
+                    .addClass("error")
+                    .text("incorrect username or password"));
     } 
     else {
         setCookie('user', data.sessionid, 7);
@@ -81,7 +99,7 @@ function logout()
     var session = unescape(getCookie('user'));
     $.getJSON("/logout", { sid: session },
         function() {
-        document.cookie = '';
+        setCookie('user', "", -7);
             document.location = '/'; 
         });
     return false;
@@ -90,11 +108,12 @@ function logout()
 $(document).ready(function(){
     var session = getCookie('user');
     
-    if( session == null ) {
+    if( session == null || session == "" ) {
         createLoginForm($(".userbar"));
+        $(".userbar").hide();
     }
     else {
-        $.getJSON("/get-user", { sid: unescape(session) }, authResponse);
+        $.getJSON("/get-user", { sid: unescape(session) }, authResponseOnLoad);
     }
     $(".loginbutton").click(function(e) {
         $(".userbar").slideToggle("medium");

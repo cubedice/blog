@@ -76,6 +76,8 @@
   ([sessionid password link]
      (let [user (models/get-user sessionid)]
        (if (not (nil? user))
-	 (UPDATE :users (user :id) {:password (BCrypt/hashpw password (BCrypt/gensalt 12))
-				    :url link}))
+	 (if (not (empty? password))
+	   (UPDATE :users (user :id) {:password (BCrypt/hashpw password (BCrypt/gensalt 12))
+				      :url link})
+	   (UPDATE :users (user :id) {:url link})))
        (edit-user-info sessionid))))
