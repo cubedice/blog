@@ -22,7 +22,8 @@
       [:div.sidebar 
        [:p [:a {:href "/about"} "about blog"]]
        [:p [:a {:href "/me"} "about me"]]
-       [:p [:a {:href "/posts"} "all posts"]]]
+       [:p [:a {:href "/posts"} "all posts"]]
+       [:p [:a {:href "/feed"} "rss feed"]]]
       [:div.rightcol body]]]]))
 
 ;(defmacro table-form-to 
