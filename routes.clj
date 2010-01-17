@@ -39,4 +39,4 @@
   (GET "/static/*"
     (or (serve-file "/Users/kevindavenport/workspace/blog/static/" (params :*)) :next))
   (ANY "*" 2
-    (page-not-found)))
+    [404 "oops! page not found"]))

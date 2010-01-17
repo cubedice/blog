@@ -6,10 +6,7 @@
 
 (defn rss [title url description & body]
   (html "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
-        [:rss {:version "2.0"               
-	       :xmlns:content "http://purl.org/rss/1.0/modules/content/"
-               :xmlns:wfw "http://wellformedweb.org/CommentAPI/"
-               :xmlns:dc " http://purl.org/dc/elements/1.1/"}
+        [:rss {:version "2.0"}
 	 [:channel
 	  [:title title]
 	  [:link url]

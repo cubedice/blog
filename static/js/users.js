@@ -116,6 +116,6 @@ $(document).ready(function(){
         $.getJSON("/get-user", { sid: unescape(session) }, authResponseOnLoad);
     }
     $(".loginbutton").click(function(e) {
-        $(".userbar").slideToggle("medium");
+        $(".userbar").slideToggle("fast");
     });
 });

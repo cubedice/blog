@@ -6,7 +6,7 @@
   (:import BCrypt))
 
 (defn home []
-  (views/home))
+  (views/home (take 5 (models/get-posts))))
 
 (defn create-post 
   ([sid]
@@ -17,7 +17,8 @@
   ([sid title body]
     (let [user (models/get-user sid)]
       (if (and (not (nil? user)) (= (user :auth_level) "root"))
-        (INSERT :posts {:title title :body_markdown body :body_html (models/markdown-to-html body) 
+        (INSERT :posts {:title title :body_markdown body 
+			:body_html (models/markdown-to-html body) 
 			:author user :slug (models/slugify title)}))
       (redirect-to "/posts"))))
 
@@ -32,11 +33,14 @@
     (let [user (models/get-user sid)
 	  post (models/get-post slug)]
       (if (and (not (nil? user)) (= (user :auth_level) "root") (not (nil? post)))
-        (UPDATE :posts (post :id) {:body_markdown body :body_html (models/markdown-to-html body)}))
+        (UPDATE :posts (post :id) {:body_markdown body 
+				   :body_html (models/markdown-to-html body)}))
       (redirect-to (str "/posts/" (post :slug))))))
 
 (defn post-comment [name url comment post-slug]
-  (INSERT :comments {:name name :url url :body_markdown comment 
+  (INSERT :comments {:name (if (blank? name) "anonymous coward" name)
+		     :url (if (blank? url) "#" url)
+		     :body_markdown comment 
 		     :body_html (models/markdown-to-html comment) :post_slug post-slug})
   (redirect-to (str "/posts/" post-slug)))
 

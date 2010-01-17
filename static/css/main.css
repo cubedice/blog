@@ -1,11 +1,8 @@
 .header {}
-.blogtitle {
-    clear: both;
-    width: 100%;
-}
 .sidebar {
     width: 200px;
     margin-top: 30px;
+    padding-left: 20px;
     float: left;
     color: #9e4d00;
     background-color: #222;
@@ -14,6 +11,13 @@
     letter-spacing: .3em;
     font-weight: lighter;
 }
+.sidebar a {
+    text-decoration: none;
+    font-weight: bolder;
+}
+.sidebar a:hover {
+    text-decoration: underline;
+}
 .blogtitle {
     margin-left: -2px;
     padding-bottom: 15px;
@@ -21,6 +25,12 @@
     font: 2em Helvetica;
     letter-spacing: .1em;
     font-weight: bolder;
+    width: 100%;
+}
+.blogtitle a {
+    text-decoration: none;
+    color: #e09700;
+    font: 2em Helvetica;
 }
 body {
     width: 900px;
@@ -29,7 +39,7 @@ body {
   }
 .rightcol {
     float: right;
-    width: 650px;
+    width: 630px;
     font-family: Verdana;
 }
 .post {
@@ -77,4 +87,9 @@ textarea {
 .error {
     color:red;
     font-style: italic;
+}
+
+.date {
+    font-style: italic;
+    font-size: .5em;
 }
