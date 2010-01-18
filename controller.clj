@@ -28,7 +28,7 @@
 	  post (models/get-post slug)]
       (if (and (not (nil? user)) (= (user :auth_level) "root"))
         (views/edit-post post)
-        [403])))
+        [403 "sorry, not allowed"])))
   ([sid slug body]
     (let [user (models/get-user sid)
 	  post (models/get-post slug)]
