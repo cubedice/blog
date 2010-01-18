@@ -1,1 +1,9 @@
-ToDO: site structure
+to operate:
+(blog.runserver/run-init)
+
+and then:
+(blog.runserver/up)
+and
+(blog.runserver/down)
+to start and stop it
+
