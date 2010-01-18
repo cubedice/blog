@@ -90,7 +90,7 @@
 	context (.enterContext cfact)
 	scope (.initStandardObjects context)
 	input (Context/javaToJS txt scope)
-	script (str (slurp "/Users/kevindavenport/workspace/blog/static/js/showdown.js")
+	script (str (slurp "/home/cubedice/public_html/mikedavenport.net/htdocs/static/js/showdown.js")
 		    "new Showdown.converter().makeHtml(input);")]
     (try
       (ScriptableObject/putProperty scope "input" input)

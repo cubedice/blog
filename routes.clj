@@ -1,6 +1,7 @@
 (ns blog.routes
   (:use [compojure])
   (:require [blog.controller :as controller])
+  (:require [blog.views :as views])
   (:require [blog.rss :as rss]))
 
 (defroutes blog-routes
@@ -15,9 +16,9 @@
   (GET "/posts/:slug"
     (controller/view-post (params :slug)))
   (GET "/posts/:slug/edit"
-    (controller/edit-post (first (cookies :user)) (params :slug)))
+    (controller/edit-post (cookies :user) (params :slug)))
   (POST "/posts/:slug/edit"
-    (controller/edit-post (first (cookies :user)) (params :slug) (params :body)))
+    (controller/edit-post (cookies :user) (params :slug) (params :body)))
   (POST "/posts/:slug/comment"
     (controller/post-comment (params :name) (params :link) (params :comment) (params :slug)))
   (GET "/create-account"
@@ -36,6 +37,10 @@
     (controller/get-user-info (params :sid)))
   (GET "/feed"
     (rss/main-feed))
+  (GET "/me"
+    (views/about-me))
+  (GET "/about"
+    (views/about-blog))
   (GET "/static/*"
     (or (serve-file "/home/cubedice/public_html/mikedavenport.net/htdocs/static/" (params :*)) :next))
   (ANY "*" 2
