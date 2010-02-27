@@ -90,7 +90,7 @@
 	cfact (ContextFactory/getGlobal)
 	context (.enterContext cfact)
 	scope (.initStandardObjects context)
-	input (Context/javaToJS txt scope)
+	input (Context/javaToJS safetxt scope)
 	script (str (slurp "/home/cubedice/public_html/mikedavenport.net/htdocs/static/js/showdown.js")
 		    "new Showdown.converter().makeHtml(input);")]
     (try

@@ -38,8 +38,8 @@
       (redirect-to (str "/posts/" (post :slug))))))
 
 (defn post-comment [name url comment post-slug]
-  (INSERT :comments {:name (if (blank? name) "anonymous coward" (models/sanitize name))
-		     :url (if (blank? url) "#" (models/sanitize url))
+  (INSERT :comments {:name (if (blank? name) "anonymous coward" (models/msanitize name))
+		     :url (if (blank? url) "#" (models/msanitize url))
 		     :body_markdown comment 
 		     :body_html (models/markdown-to-html comment) :post_slug post-slug})
   (redirect-to (str "/posts/" post-slug)))

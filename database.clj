@@ -3,6 +3,7 @@
   (:use clojure.contrib.sql) 
   (:use clojure.contrib.json.write) 
   (:use compojure)
+  (:require [clojure.contrib.str-utils2 :as s-u-2])
   (:use (clojure.contrib
 	 [def :only (defalias)]
 	 [java-utils :only (as-str)])))
@@ -45,9 +46,10 @@
 (defn SELECT
   "A generic select function."
   ([what place]
-     (ask-sql db (str "select " what " from " place)))
+     (ask-sql db (str "select " (dbsanitize what) " from " (dbsanitize place))))
   ([what place where]
-     (ask-sql db (str "select " what " from " place " where " where))))
+     (ask-sql db (str "select " (dbsanitize what) " from " (dbsanitize place) " where " 
+		      (sanitize where)))))
 
 (defn INSERT
   "A generic insert function."
@@ -61,10 +63,14 @@
   "A generic update function -- based on id."
   [table id a-map]
   (with-connection db
-    (update-values table ["id=?" id] a-map)))
+    (update-values table ["id=?" (dbsanitize id)] a-map)))
 
 (defn REMOVE
   "A generic delete function -- based on id."
   [table id]
   (with-connection db
-    (delete-rows table ["id=?" id])))
+    (delete-rows table ["id=?" (dbsanitize id)])))
+
+(defn dbsanitize [txt]
+  (s-u-2/replace txt #"(;)"
+		 ""))
